@@ -6,7 +6,7 @@ jobs:
     name: Linux
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Install Dependencies
       run: |
         sudo apt-get update
@@ -15,15 +15,17 @@ jobs:
       run: make release -j$(nproc)
       env:
         ARCHIVE: 1
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: Linux
         path: build/*.zip
+        retention-days: 1
+
   windows:
     name: Windows
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Compile
       run: |
         choco install zip
@@ -31,28 +33,32 @@ jobs:
         make release -j $env:NUMBER_OF_PROCESSORS USE_CURL_DLOPEN=1
       env:
         ARCHIVE: 1
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: Windows
         path: build/*.zip
+        retention-days: 1
+
   macos:
     name: macOS
     runs-on: macos-15
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Compile
       run: make release -j$(sysctl -n hw.logicalcpu)
       env:
         ARCHIVE: 1
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: macOS
         path: build/*.zip
+        retention-days: 1
+
   web:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
+    - uses: actions/checkout@v6
       with:
         repository: emscripten-core/emsdk
         path: emsdk
@@ -67,7 +73,9 @@ jobs:
       run: |
         source emsdk/emsdk_env.sh
         emmake make release -j$(nproc)
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: Web
         path: build/*.zip
+        retention-days: 1
+
